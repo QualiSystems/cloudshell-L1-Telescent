@@ -1,0 +1,11 @@
+{
+  "driver_variable": {
+    "connection_port": 9871,
+    "switch_family":  "L1 Connectivity Switch",
+    "switch_model": "Telescent112-A",
+    "blade_family": "L1 Connectivity Blade",
+    "blade_model": "Blade Telescent112-A",
+    "port_family": "L1 Connectivity Port",
+    "port_model": "Port Telescent112-A"
+  }
+}
