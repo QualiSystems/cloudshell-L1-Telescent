@@ -37,6 +37,10 @@ if __name__ == '__main__':
     request_manager.bind_command('mapclearto', (RequestHandler.map_clear_to, request_handler))
     request_manager.bind_command('mapclear', (RequestHandler.map_clear, request_handler))
     request_manager.bind_command('setspeedmanual', (RequestHandler.set_speed_manual, request_handler))
+    try:
+        request_manager.bind_command('getattributevalue', (RequestHandler.get_attribute_value, request_handler))
+    except:
+        pass
 
     server_connection = ServerConnection(host, port, request_manager, exe_folder_str)
 

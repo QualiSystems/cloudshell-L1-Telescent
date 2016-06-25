@@ -2,3 +2,4 @@ build/*.*
 dist
 build
 *.pyc
+test_environment.zip

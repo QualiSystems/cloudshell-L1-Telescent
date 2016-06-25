@@ -5,6 +5,7 @@
     "connection_type": "ssh",
     "device_prompt": "[0-9a-zA-Z@][0-9a-zA-Z@]*>",
     "server_timeout": 10,
+    "connection_port": 9871,
     "runtime_configuration": "telescent_runtime_configuration.json"
   },
 
@@ -15,20 +16,15 @@
   },
 
   "driver_variable": {
-    "service_mode": "tl1",
-    "port_mode": "logical",
+    "switch_family":  "L1 Connectivity Switch",
+    "switch_model": "Telescent",
 
-    "resource_name": [
-      "Chassis {0}",
-      "Port {0}"
-    ],
-    "resource_family_name": [
-      "L1 Connectivity Switch",
-      "L1 Switch Port"
-    ],
-    "resource_model_name": [
-      "{0}",
-      "Port {0}"
-    ]
+    "blade_name_prefix": "module",
+    "blade_family": "L1 Connectivity Blade",
+    "blade_model": "Blade Telescent",
+
+    "port_name_prefix": "port",
+    "port_family": "L1 Connectivity Port",
+    "port_model": "Port Telescent"
   }
 }
