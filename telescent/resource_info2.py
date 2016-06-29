@@ -46,8 +46,7 @@ class ResourceInfo2:
         for attrname in self.attrname2typevaluetuple.keys()
     ]
 )) + '''    </ResourceAttributes>
-''' + (
-        '''    <ResourceMapping><IncomingMapping>''' + self.map_path + '''</IncomingMapping></ResourceMapping>''' if self.map_path else ''
-) +
+''' +
+                      ('''    <ResourceMapping><IncomingMapping>''' + self.map_path + '''</IncomingMapping></ResourceMapping>''' if self.map_path else '') +
 '''</ResourceInfo>
 ''')

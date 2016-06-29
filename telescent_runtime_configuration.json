@@ -12,6 +12,18 @@
 
     "port_name_prefix": "port",
     "port_family": "L1 Connectivity Port",
-    "port_model": "Port Telescent"
+    "port_model": "Port Telescent",
+
+    "dict_logical_port_to_physical_input_port": {
+      "2050": "2053",
+      "2051": "2054",
+      "2047": "2048",
+      "2048": "2047"
+    },
+    "dict_logical_port_to_physical_output_port": {
+      "2047": "2048",
+      "2048": "2047",
+      "2049": "2052"
+    }
   }
 }

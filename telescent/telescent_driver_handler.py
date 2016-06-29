@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
+import json
 import re
 
 from common.configuration_parser import ConfigurationParser
@@ -63,6 +63,17 @@ class TelescentDriverHandler(DriverHandlerBase):
         portfamily = ConfigurationParser.get("driver_variable", "port_family")
         portmodel = ConfigurationParser.get("driver_variable", "port_model")
 
+        log2phy_in = ConfigurationParser.get("driver_variable", "dict_logical_port_to_physical_input_port")
+        log2phy_out = ConfigurationParser.get("driver_variable", "dict_logical_port_to_physical_output_port")
+
+        phy2log_in = {}
+        phy2log_out = {}
+
+        for log in log2phy_in:
+            phy2log_in[log2phy_in[log]] = log
+        for log in log2phy_out:
+            phy2log_out[log2phy_out[log]] = log
+
         sw = ResourceInfo2('', address, switchfamily, switchmodel, serial=address)
 
         switchstate = self.send_command('switchstate')
@@ -93,8 +104,9 @@ class TelescentDriverHandler(DriverHandlerBase):
                 for col in range(0, 12):
                     outaddr = global_row*12 + col
                     inaddr = d['addr' + str(col)]
-                    instatus = d['status' + str(col)]
-                    outaddr2inaddrstatus[outaddr] = (inaddr, instatus)
+                    status = d['status' + str(col)]
+                    if not status.startswith('U'):
+                        outaddr2inaddrstatus[outaddr] = (inaddr, status)
                 if global_row > max_global_row:
                     max_global_row = global_row
 
@@ -106,24 +118,58 @@ class TelescentDriverHandler(DriverHandlerBase):
                                   blademodel,
                                   serial=bladeserial)
             sw.subresources.append(blade)
-            for row in range(0,8):
+            for row in range(0, 8):
                 for col in range(0, 12):
                     # portname = 'row_%d_col_%0.2d' % (row, col)
                     # portaddr = '%d,%d' % (row, col)
-                    absaddr = (module * 8 + row) * 12 + col
-                    portname = '%s%0.4d' % (portprefix, absaddr)
-                    portaddr = '%d' % (absaddr)
-                    if absaddr in outaddr2inaddrstatus and outaddr2inaddrstatus[absaddr][1].startswith('A'):
-                        connabsaddr = int(outaddr2inaddrstatus[absaddr][0])
-                        connglobrow = connabsaddr / 12
+                    log_absaddr = (module * 8 + row) * 12 + col
+
+                    if str(log_absaddr) in log2phy_in:
+                        phy_absaddr_in = int(log2phy_in[str(log_absaddr)])
+                    else:
+                        phy_absaddr_in = log_absaddr
+
+                    if str(log_absaddr) in log2phy_out:
+                        phy_absaddr_out = int(log2phy_out[str(log_absaddr)])
+                    else:
+                        phy_absaddr_out = log_absaddr
+
+                    if phy_absaddr_in == phy_absaddr_out:
+                        phy_absaddr = '%d' % (phy_absaddr_in)
+                    else:
+                        phy_absaddr = '%d-%d' % (phy_absaddr_in, phy_absaddr_out)
+
+                    portname = '%s%0.4d' % (portprefix, log_absaddr)
+                    portaddr = '%s/%d/%s' % (address, module, phy_absaddr)
+                    portserial = portaddr
+                    if phy_absaddr_out in outaddr2inaddrstatus and outaddr2inaddrstatus[phy_absaddr_out][1].startswith('A'):
+                        conn_phy_absaddr = outaddr2inaddrstatus[phy_absaddr_out][0]
+
+                        if conn_phy_absaddr in phy2log_in:
+                            conn_log_absaddr = int(phy2log_in[conn_phy_absaddr])
+                        else:
+                            conn_log_absaddr = int(conn_phy_absaddr)
+
+                        if str(conn_log_absaddr) in log2phy_in:
+                            a = log2phy_in[str(conn_log_absaddr)]
+                        else:
+                            a = str(conn_log_absaddr)
+
+                        if str(conn_log_absaddr) in log2phy_out:
+                            b = log2phy_out[str(conn_log_absaddr)]
+                        else:
+                            b = str(conn_log_absaddr)
+
+                        if a == b:
+                            ab = '%s' % (a)
+                        else:
+                            ab = '%s-%s' % (a, b)
+
+                        connglobrow = conn_log_absaddr / 12
                         connmodule = connglobrow / 8
-                        # connrow = connglobrow % 8
-                        # conncol = connabsaddr % 12
-                        mappath = '%s/%d/%d' % (address, connmodule, connabsaddr)
+                        mappath = '%s/%d/%s' % (address, connmodule, ab)
                     else:
                         mappath = None
-                    # todo Warning "An item with the same key has already been added." caused by nonblank mappath
-                    portserial = address + '/' + str(module) + '/' + portaddr
                     blade.subresources.append(ResourceInfo2(
                         portname,
                         portaddr,
@@ -140,6 +186,8 @@ class TelescentDriverHandler(DriverHandlerBase):
         a = src_port[-1]
         b = dst_port[-1]
         self.log('map_uni ' + a + ' ' + b)
+        a = re.sub('-.*', '', a)
+        b = re.sub('.*-', '', b)
         out = ''
         out += self.send_command('unlock --force -in ' + a)
         out += self.send_command('unlock --force -out ' + b)
@@ -151,6 +199,8 @@ class TelescentDriverHandler(DriverHandlerBase):
         a = src_port[-1]
         b = dst_port[-1]
         self.log('map_bidi ' + a + ' ' + b)
+        a = re.sub('-.*', '', a)
+        b = re.sub('.*-', '', b)
         out = ''
         out += self.send_command('unlock --force ' + a)
         out += self.send_command('unlock --force ' + b)
@@ -162,6 +212,8 @@ class TelescentDriverHandler(DriverHandlerBase):
         a = src_port[-1]
         b = dst_port[-1]
         self.log('map_clear_to ' + a + ' ' + b)
+        a = re.sub('-.*', '', a)
+        b = re.sub('.*-', '', b)
         out = ''
         # out += self.send_command('unlock --force -in ' + a)
         # out += self.send_command('unlock --force -out ' + b)
@@ -176,6 +228,8 @@ class TelescentDriverHandler(DriverHandlerBase):
         a = src_port[-1]
         b = dst_port[-1]
         self.log('map_clear ' + a + ' ' + b)
+        a = re.sub('-.*', '', a)
+        b = re.sub('.*-', '', b)
         out = ''
         out += self.send_command('unlock --force ' + a)
         out += self.send_command('unlock --force ' + b)
