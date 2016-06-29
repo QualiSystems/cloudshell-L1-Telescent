@@ -168,7 +168,7 @@ class TelescentDriverHandler(DriverHandlerBase):
                         map_path=mappath,
                         serial=portserial))
 
-        self.log('resource info xml: (((' + sw.to_string() + ')))')
+        self.log('returning resource info xml: (((' + sw.to_string() + ')))')
 
         return XMLWrapper.parse_xml(sw.to_string())
 
