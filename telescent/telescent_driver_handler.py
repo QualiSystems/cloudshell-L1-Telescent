@@ -38,17 +38,7 @@ class TelescentDriverHandler(DriverHandlerBase):
         self.log('prompt=' + str(self._prompt))
 
         self.log('Connecting...')
-        try:
-            self._session.connect(address, username, password, port=self._port, re_string=self._prompt)
-        except:
-            self.log('Retrying')
-            from common.cli.expect_session import ExpectSession
-            ExpectSession.init(self._session, address, username, password, self._port)
-            self._session._handler.connect(address, self._port, username, password, timeout=self._session._timeout,
-                                  banner_timeout=30, allow_agent=False, look_for_keys=True)
-            self._session._current_channel = self._session._handler.invoke_shell()
-            self._session._current_channel.settimeout(self._session._timeout)
-            self.log(self._session.hardware_expect(re_string=self._prompt, timeout=self._session._timeout))
+        self._session.connect(address, username, password, port=self._port, re_string=self._prompt, look_for_keys=True)
         self.log('Connected')
 
     def get_resource_description(self, address, command_logger=None):
