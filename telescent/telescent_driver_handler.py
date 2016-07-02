@@ -11,8 +11,8 @@ from common.xml_wrapper import XMLWrapper
 from resource_info2 import ResourceInfo2
 from cloudshell.core.logger.qs_logger import get_qs_logger
 
-MAX_CONNECT_SECONDS = 300
-MAX_DISCONNECT_SECONDS = 300
+MAX_CONNECT_SECONDS = 1800
+MAX_DISCONNECT_SECONDS = 1800
 
 class TelescentDriverHandler(DriverHandlerBase):
     def __init__(self):
