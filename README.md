@@ -108,13 +108,27 @@ This mapping implicitly exists until specific ports are overridden:
 
 
 ## Development
-compile_driver.bat:
-- _MUST BE RUN AS ADMINISTRATOR_
-- kills all Telescent.exe
-- copies to c:\Program Files (x86)\QualiSystems\CloudShell\Server\Drivers:
-  - .\dist\Telescent.exe 
+
+- Python must be in PATH
+- PyInstaller must be installed
+  - http://www.pyinstaller.org/
+  - Download and extract the zip
+  - python setup.py install
+- git must be installed
+  - https://git-scm.com/
+  - Enable Git Bash if asked
+- In Git Bash:
+  - git clone https://github.com/QualiSystems/cloudshell-core.git
+  - git clone https://github.com/QualiSystems/cloudshell-L1-networking-core.git
+  - git clone https://github.com/QualiSystems/cloudshell-L1-Telescent.git
+
+compile_driver.bat
+- Run from a cmd command prompt _as Administrator_
+- Kills all Telescent.exe 
+- Copies to c:\Program Files (x86)\QualiSystems\CloudShell\Server\Drivers:
+  - .\dist\Telescent.exe
   - .\telescent_runtime_configuration.json
-- copies to compiled_driver:
+- Copies to compiled_driver folder:
   - .\dist\Telescent.exe
   - .\telescent_runtime_configuration.json
   - .\telescent_datamodel.xml
