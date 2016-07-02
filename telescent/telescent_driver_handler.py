@@ -3,12 +3,16 @@
 import json
 import re
 
+import time
+
 from common.configuration_parser import ConfigurationParser
 from common.driver_handler_base import DriverHandlerBase
 from common.xml_wrapper import XMLWrapper
 from resource_info2 import ResourceInfo2
 from cloudshell.core.logger.qs_logger import get_qs_logger
 
+MAX_CONNECT_SECONDS = 300
+MAX_DISCONNECT_SECONDS = 300
 
 class TelescentDriverHandler(DriverHandlerBase):
     def __init__(self):
@@ -185,6 +189,11 @@ class TelescentDriverHandler(DriverHandlerBase):
         if 'Exception' in out or 'ERROR' in out:
             raise Exception('Error: ' + out)
 
+        self._repeat_until_pattern('switchstate input ' + a, [
+            'STATE = ALLOCATED_AND_LOCKED',
+            'OUTPUT = ' + b + ' '
+        ], MAX_CONNECT_SECONDS, 5)
+
     def map_bidi(self, src_port, dst_port, command_logger=None):
         a = src_port[-1]
         b = dst_port[-1]
@@ -197,6 +206,15 @@ class TelescentDriverHandler(DriverHandlerBase):
         out += self.send_command('connect --force ' + a + ' ' + b)
         if 'Exception' in out or 'ERROR' in out:
             raise Exception('Error: ' + out)
+
+        self._repeat_until_pattern('switchstate input ' + a, [
+            'STATE = ALLOCATED_AND_LOCKED',
+            'OUTPUT = ' + b + ' '
+        ], MAX_CONNECT_SECONDS, 5)
+        self._repeat_until_pattern('switchstate input ' + b, [
+            'STATE = ALLOCATED_AND_LOCKED',
+            'OUTPUT = ' + a + ' '
+        ], MAX_CONNECT_SECONDS, 5)
 
     def map_clear_to(self, src_port, dst_port, command_logger=None):
         a = src_port[-1]
@@ -214,6 +232,8 @@ class TelescentDriverHandler(DriverHandlerBase):
         if 'Exception' in out or 'ERROR' in out:
             raise Exception('Error: ' + out)
 
+        self._repeat_until_pattern('switchstate input ' + a, 'STATE = UNALLOCATED_AND_', MAX_DISCONNECT_SECONDS, 5)
+
     def map_clear(self, src_port, dst_port, command_logger=None):
         a = src_port[-1]
         b = dst_port[-1]
@@ -227,6 +247,26 @@ class TelescentDriverHandler(DriverHandlerBase):
         out += self.send_command('unallocate --force ' + b)
         if 'Exception' in out or 'ERROR' in out:
             raise Exception('Error: ' + out)
+
+        self._repeat_until_pattern('switchstate input ' + a, 'STATE = UNALLOCATED_AND_', MAX_DISCONNECT_SECONDS, 5)
+        self._repeat_until_pattern('switchstate input ' + b, 'STATE = UNALLOCATED_AND_', MAX_DISCONNECT_SECONDS, 5)
+
+    def _repeat_until_pattern(self, command, patterns, maxwait, interval):
+        if isinstance(patterns, str):
+            patterns = [patterns]
+        out = ''
+        for i in range(0, maxwait / interval):
+            time.sleep(interval)
+            s = self.send_command(command)
+            out += s
+            ok = True
+            for pattern in patterns:
+                if pattern not in s:
+                    ok = False
+                    break
+            if ok:
+                return
+        raise Exception(', '.join(patterns) + ' not seen within ' + str(MAX_DISCONNECT_SECONDS) + ' seconds')
 
     def set_speed_manual(self, command_logger=None):
         self.log('1')

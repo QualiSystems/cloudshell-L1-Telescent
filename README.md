@@ -109,7 +109,8 @@ This mapping implicitly exists until specific ports are overridden:
 
 ## Development
 compile_driver.bat:
-- kills all Telescent.exe 
+- _MUST BE RUN AS ADMINISTRATOR_
+- kills all Telescent.exe
 - copies to c:\Program Files (x86)\QualiSystems\CloudShell\Server\Drivers:
   - .\dist\Telescent.exe 
   - .\telescent_runtime_configuration.json
