@@ -2,7 +2,7 @@
 
 ## Installation
 Copy to c:\Program Files (x86)\QualiSystems\CloudShell\Server\Drivers on CloudShell machine:
-- Telescent.exe
+- Telescent.exe (be sure to right click, open Properties, and *Unblock* the file)
 - telescent_runtime_configuration.json
 
 To customize SSH port and resource family and model names, edit:
