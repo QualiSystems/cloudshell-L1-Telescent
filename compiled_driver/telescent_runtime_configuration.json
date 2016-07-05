@@ -1,6 +1,6 @@
 {
   "common_variable": {
-    "connection_port": 9861
+    "connection_port": 9871
   },
   "driver_variable": {
     "switch_family":  "L1 Connectivity Switch",
