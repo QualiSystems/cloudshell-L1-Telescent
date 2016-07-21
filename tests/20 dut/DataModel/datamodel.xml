@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DataModelInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.qualisystems.com/ResourceManagement/DataModelSchema.xsd">
+  <Attributes />
+  <ResourceFamilies>
+    <ResourceFamily Name="DUT" Description="" IsSearchable="true" ResourceType="Resource">
+      <AttachedAttributes />
+      <AttributeValues />
+      <Models>
+        <ResourceModel Name="Generic DUT" Description="" SupportsConcurrentCommands="false">
+          <AttachedAttributes />
+          <AttributeValues />
+          <ParentModels />
+          <Drivers />
+          <Scripts />
+        </ResourceModel>
+      </Models>
+      <Categories />
+    </ResourceFamily>
+    <ResourceFamily Name="DUT Port" IsConnectable="true" Description="" IsSearchable="true" ResourceType="Resource">
+      <AttachedAttributes />
+      <AttributeValues />
+      <Models>
+        <ResourceModel Name="Generic Port" Description="" SupportsConcurrentCommands="false">
+          <AttachedAttributes />
+          <AttributeValues />
+          <ParentModels>
+            <ParentModelName>Generic DUT</ParentModelName>
+          </ParentModels>
+          <Drivers />
+          <Scripts />
+        </ResourceModel>
+      </Models>
+      <Categories />
+    </ResourceFamily>
+  </ResourceFamilies>
+  <DriverDescriptors />
+  <ScriptDescriptors />
+</DataModelInfo>

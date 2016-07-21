@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResourceInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="dut19" FolderFullPath="" Address="dut19" ModelName="Generic DUT" xmlns="http://schemas.qualisystems.com/ResourceManagement/ResourceSchema.xsd">
+  <Attributes />
+  <ChildResources>
+    <ResourceInfo Name="port1" Address="port1" ModelName="Generic Port">
+      <Attributes />
+      <ChildResources />
+      <Connections />
+    </ResourceInfo>
+  </ChildResources>
+  <Connections />
+</ResourceInfo>

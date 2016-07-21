@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TopologyInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Details Name="20 dut" Alias="20 dut" Public="false" DefaultDuration="120">
+    <Categories />
+    <Diagram Zoom="1" />
+  </Details>
+  <Resources>
+    <Resource PositionX="570" PositionY="25" Name="dut2" Shared="true">
+      <SubResources>
+        <Resource Name="port1" Shared="true" />
+      </SubResources>
+    </Resource>
+    <Resource PositionX="572" PositionY="470" Name="dut10" Shared="true">
+      <SubResources>
+        <Resource Name="port1" Shared="true" />
+      </SubResources>
+    </Resource>
+    <Resource PositionX="1198" PositionY="263" Name="dut16" Shared="true">
+      <SubResources>
+        <Resource Name="port1" Shared="true" />
+      </SubResources>
+    </Resource>
+    <Resource PositionX="866" PositionY="139" Name="dut13" Shared="true">
+      <SubResources>
+        <Resource Name="port1" Shared="true" />
+      </SubResources>
+    </Resource>
+    <Resource PositionX="869" PositionY="380" Name="dut17" Shared="true">
+      <SubResources>
+        <Resource Name="port1" Shared="true" />
+      </SubResources>
+    </Resource>
+    <Resource PositionX="575" PositionY="125" Name="dut4" Shared="true">
+      <SubResources>
+        <Resource Name="port1" Shared="true" />
+      </SubResources>
+    </Resource>
+    <Resource PositionX="169" PositionY="229" Name="dut5" Shared="true">
+      <SubResources>
+        <Resource Name="port1" Shared="true" />
+      </SubResources>
+    </Resource>
+    <Resource PositionX="1189" PositionY="144" Name="dut14" Shared="true">
+      <SubResources>
+        <Resource Name="port1" Shared="true" />
+      </SubResources>
+    </Resource>
+    <Resource PositionX="866" PositionY="265" Name="dut15" Shared="true">
+      <SubResources>
+        <Resource Name="port1" Shared="true" />
+      </SubResources>
+    </Resource>
+    <Resource PositionX="568" PositionY="354" Name="dut8" Shared="true">
+      <SubResources>
+        <Resource Name="port1" Shared="true" />
+      </SubResources>
+    </Resource>
+    <Resource PositionX="867" PositionY="496" Name="dut19" Shared="true">
+      <SubResources>
+        <Resource Name="port1" Shared="true" />
+      </SubResources>
+    </Resource>
+    <Resource PositionX="1202" PositionY="380" Name="dut18" Shared="true">
+      <SubResources>
+        <Resource Name="port1" Shared="true" />
+      </SubResources>
+    </Resource>
+    <Resource PositionX="866" PositionY="27" Name="dut11" Shared="true">
+      <SubResources>
+        <Resource Name="port1" Shared="true" />
+      </SubResources>
+    </Resource>
+    <Resource PositionX="168" PositionY="470" Name="dut9" Shared="true">
+      <SubResources>
+        <Resource Name="port1" Shared="true" />
+      </SubResources>
+    </Resource>
+    <Resource PositionX="568" PositionY="230" Name="dut6" Shared="true">
+      <SubResources>
+        <Resource Name="port1" Shared="true" />
+      </SubResources>
+    </Resource>
+    <Resource PositionX="148" PositionY="22" Name="dut1" Shared="true">
+      <SubResources>
+        <Resource Name="port1" Shared="true" />
+      </SubResources>
+    </Resource>
+    <Resource PositionX="1211" PositionY="497" Name="dut20" Shared="true">
+      <SubResources>
+        <Resource Name="port1" Shared="true" />
+      </SubResources>
+    </Resource>
+    <Resource PositionX="1193" PositionY="30" Name="dut12" Shared="true">
+      <SubResources>
+        <Resource Name="port1" Shared="true" />
+      </SubResources>
+    </Resource>
+    <Resource PositionX="176" PositionY="363" Name="dut7" Shared="true">
+      <SubResources>
+        <Resource Name="port1" Shared="true" />
+      </SubResources>
+    </Resource>
+    <Resource PositionX="150" PositionY="125" Name="dut3" Shared="true">
+      <SubResources>
+        <Resource Name="port1" Shared="true" />
+      </SubResources>
+    </Resource>
+  </Resources>
+  <Apps />
+  <Routes>
+    <Route Source="dut5/port1" Target="dut6/port1" MaxHops="2" Direction="Bi" Shared="true" />
+    <Route Source="dut7/port1" Target="dut8/port1" MaxHops="2" Direction="Bi" Shared="true" />
+    <Route Source="dut11/port1" Target="dut12/port1" MaxHops="2" Direction="Bi" Shared="true" />
+    <Route Source="dut9/port1" Target="dut10/port1" MaxHops="2" Direction="Bi" Shared="true" />
+    <Route Source="dut15/port1" Target="dut16/port1" MaxHops="2" Direction="Bi" Shared="true" />
+    <Route Source="dut3/port1" Target="dut4/port1" MaxHops="2" Direction="Bi" Shared="true" />
+    <Route Source="dut19/port1" Target="dut20/port1" MaxHops="2" Direction="Bi" Shared="true" />
+    <Route Source="dut1/port1" Target="dut2/port1" MaxHops="2" Direction="Bi" Shared="true" />
+    <Route Source="dut13/port1" Target="dut14/port1" MaxHops="2" Direction="Bi" Shared="true" />
+    <Route Source="dut17/port1" Target="dut18/port1" MaxHops="2" Direction="Bi" Shared="true" />
+  </Routes>
+</TopologyInfo>
