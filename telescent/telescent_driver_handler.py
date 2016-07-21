@@ -13,6 +13,7 @@ from cloudshell.core.logger.qs_logger import get_qs_logger
 
 MAX_CONNECT_SECONDS = 1800
 MAX_DISCONNECT_SECONDS = 1800
+SSH_TIMEOUT_SECONDS = 180
 
 class TelescentDriverHandler(DriverHandlerBase):
     def __init__(self):
@@ -23,24 +24,35 @@ class TelescentDriverHandler(DriverHandlerBase):
         self._logger = get_qs_logger(log_group=self._driver_name + '_internal',
                                      log_file_prefix=self._driver_name + '_internal',
                                      log_category='INTERNAL')
+        self._last_active_time = 0
 
     def log(self, s):
         self._logger.info(s)
-        
+
+    def ensure_connection(self):
+        t = time.time()
+        if t > self._last_active_time + SSH_TIMEOUT_SECONDS:
+            self.log('Reconnecting...')
+            self._session.reconnect(look_for_keys=True)
+            self.log('Reconnected')
+        self._last_active_time = t
+
     def send_command(self, command):
+        self.ensure_connection()
         self.log('Sending command: ' + command)
         out = self._session.send_command(command, re_string=self._prompt)
         self.log('Command result: (((' + out + ')))')
         return out
 
     def login(self, address, username, password, command_logger=None):
+        self._last_active_time = time.time()
+
         self.log('login')
         self.log('address=' + str(address))
         self.log('username=' + str(username))
         # self.log('password=' + str(password))
         self.log('port=' + str(self._port))
         self.log('prompt=' + str(self._prompt))
-
         self.log('Connecting...')
         self._session.connect(address, username, password, port=self._port, re_string=self._prompt, look_for_keys=True)
         self.log('Connected')
@@ -269,7 +281,7 @@ class TelescentDriverHandler(DriverHandlerBase):
         raise Exception(', '.join(patterns) + ' not seen within ' + str(MAX_DISCONNECT_SECONDS) + ' seconds')
 
     def set_speed_manual(self, command_logger=None):
-        self.log('1')
+        self.log('set_speed_manual')
     # def set_speed_manual(self, src_port, dst_port, speed, duplex, command_logger=None):
     #     self.log('1')
     #     # command_logger.log('1')
