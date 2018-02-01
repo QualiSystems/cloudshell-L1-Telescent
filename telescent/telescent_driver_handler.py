@@ -1,21 +1,23 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import json
 import re
-
 import time
 
 from common.configuration_parser import ConfigurationParser
 from common.driver_handler_base import DriverHandlerBase
 from common.xml_wrapper import XMLWrapper
-from resource_info2 import ResourceInfo2
+
 from cloudshell.core.logger.qs_logger import get_qs_logger
+from resource_info2 import ResourceInfo2
 
 MAX_CONNECT_SECONDS = 1800
 MAX_DISCONNECT_SECONDS = 1800
 SSH_TIMEOUT_SECONDS = 180
 
+
 class TelescentDriverHandler(DriverHandlerBase):
+    ERROR_PATTERNS = [r'.*=+\s*error\s*=+(.+?)=+']
+
     def __init__(self):
         DriverHandlerBase.__init__(self)
         self._port = ConfigurationParser.get("common_variable", "connection_port")
@@ -108,7 +110,7 @@ class TelescentDriverHandler(DriverHandlerBase):
                 d = matches.groupdict()
                 global_row = int(d['global_row'])
                 for col in range(0, 12):
-                    outaddr = global_row*12 + col
+                    outaddr = global_row * 12 + col
                     inaddr = d['addr' + str(col)]
                     status = d['status' + str(col)]
                     if not status.startswith('U'):
@@ -148,7 +150,8 @@ class TelescentDriverHandler(DriverHandlerBase):
                     portname = '%s%0.4d' % (portprefix, log_absaddr)
                     portaddr = '%s/%d/%s' % (address, module, phy_absaddr)
                     portserial = portaddr
-                    if phy_absaddr_out in outaddr2inaddrstatus and outaddr2inaddrstatus[phy_absaddr_out][1].startswith('A'):
+                    if phy_absaddr_out in outaddr2inaddrstatus and outaddr2inaddrstatus[phy_absaddr_out][1].startswith(
+                            'A'):
                         conn_phy_absaddr = outaddr2inaddrstatus[phy_absaddr_out][0]
 
                         if conn_phy_absaddr in phy2log_in:
@@ -199,7 +202,7 @@ class TelescentDriverHandler(DriverHandlerBase):
         out += self.send_command('unlock --force -out ' + b)
         out += self.send_command('connect --force -in ' + a + ' -out ' + b)
         if 'Exception' in out or 'ERROR' in out:
-            raise Exception('Error: ' + out)
+            raise Exception('Error: ' + self._format_error_message(out))
 
         self._repeat_until_pattern('switchstate input ' + a, [
             'STATE = ALLOCATED_AND_LOCKED',
@@ -217,7 +220,7 @@ class TelescentDriverHandler(DriverHandlerBase):
         out += self.send_command('unlock --force ' + b)
         out += self.send_command('connect --force ' + a + ' ' + b)
         if 'Exception' in out or 'ERROR' in out:
-            raise Exception('Error: ' + out)
+            raise Exception('Error: ' + self._format_error_message(out))
 
         self._repeat_until_pattern('switchstate input ' + a, [
             'STATE = ALLOCATED_AND_LOCKED',
@@ -242,7 +245,7 @@ class TelescentDriverHandler(DriverHandlerBase):
         out += self.send_command('unallocate --force -in ' + a)
         out += self.send_command('unallocate --force -out ' + b)
         if 'Exception' in out or 'ERROR' in out:
-            raise Exception('Error: ' + out)
+            raise Exception('Error: ' + self._format_error_message(out))
 
         self._repeat_until_pattern('switchstate input ' + a, 'STATE = UNALLOCATED_AND_', MAX_DISCONNECT_SECONDS, 5)
 
@@ -258,7 +261,7 @@ class TelescentDriverHandler(DriverHandlerBase):
         out += self.send_command('unallocate --force ' + a)
         out += self.send_command('unallocate --force ' + b)
         if 'Exception' in out or 'ERROR' in out:
-            raise Exception('Error: ' + out)
+            raise Exception('Error: ' + self._format_error_message(out))
 
         self._repeat_until_pattern('switchstate input ' + a, 'STATE = UNALLOCATED_AND_', MAX_DISCONNECT_SECONDS, 5)
         self._repeat_until_pattern('switchstate input ' + b, 'STATE = UNALLOCATED_AND_', MAX_DISCONNECT_SECONDS, 5)
@@ -282,6 +285,7 @@ class TelescentDriverHandler(DriverHandlerBase):
 
     def set_speed_manual(self, command_logger=None):
         self.log('set_speed_manual')
+
     # def set_speed_manual(self, src_port, dst_port, speed, duplex, command_logger=None):
     #     self.log('1')
     #     # command_logger.log('1')
@@ -290,3 +294,17 @@ class TelescentDriverHandler(DriverHandlerBase):
     #     self.log('1')
     #     # command_logger.log('1')
     #     return XMLWrapper.parse_xml('<Attribute Name="' + attribute_name + '" Type="String" Value="fake_value"/>')
+
+    @classmethod
+    def _format_error_message(cls, error_output):
+        """
+        Format error output
+        :param error_output:
+        :type error_output: str
+        :rtype: str
+        """
+        for pattern in cls.ERROR_PATTERNS:
+            result = re.match(pattern, error_output, flags=re.IGNORECASE | re.DOTALL)
+            if result:
+                return result.group(1).strip()
+        return error_output.strip()
