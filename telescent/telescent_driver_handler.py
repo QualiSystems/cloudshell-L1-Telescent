@@ -26,6 +26,7 @@ class TelescentDriverHandler(DriverHandlerBase):
         self._logger = get_qs_logger(log_group=self._driver_name + '_internal',
                                      log_file_prefix=self._driver_name + '_internal',
                                      log_category='INTERNAL')
+        self.log('Driver Version: 1.0.2')
         self._last_active_time = 0
 
     def log(self, s):
