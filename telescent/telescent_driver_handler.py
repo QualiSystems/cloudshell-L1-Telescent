@@ -203,7 +203,9 @@ class TelescentDriverHandler(DriverHandlerBase):
         out += self.send_command('unlock --force -out ' + b)
         out += self.send_command('connect --force -in ' + a + ' -out ' + b)
         if 'Exception' in out or 'ERROR' in out:
-            raise Exception('Error: ' + self._format_error_message(out))
+            raise Exception(
+                'Error: ' + self._format_error_message(out) + " SrcPort: {0}, DstPort: {1}".format(src_port[-1],
+                                                                                                   dst_port[-1]))
 
         self._repeat_until_pattern('switchstate input ' + a, [
             'STATE = ALLOCATED_AND_LOCKED',
@@ -221,7 +223,9 @@ class TelescentDriverHandler(DriverHandlerBase):
         out += self.send_command('unlock --force ' + b)
         out += self.send_command('connect --force ' + a + ' ' + b)
         if 'Exception' in out or 'ERROR' in out:
-            raise Exception('Error: ' + self._format_error_message(out))
+            raise Exception(
+                'Error: ' + self._format_error_message(out) + " SrcPort: {0}, DstPort: {1}".format(src_port[-1],
+                                                                                                   dst_port[-1]))
 
         self._repeat_until_pattern('switchstate input ' + a, [
             'STATE = ALLOCATED_AND_LOCKED',
@@ -246,7 +250,9 @@ class TelescentDriverHandler(DriverHandlerBase):
         out += self.send_command('unallocate --force -in ' + a)
         out += self.send_command('unallocate --force -out ' + b)
         if 'Exception' in out or 'ERROR' in out:
-            raise Exception('Error: ' + self._format_error_message(out))
+            raise Exception(
+                'Error: ' + self._format_error_message(out) + " SrcPort: {0}, DstPort: {1}".format(src_port[-1],
+                                                                                                   dst_port[-1]))
 
         self._repeat_until_pattern('switchstate input ' + a, 'STATE = UNALLOCATED_AND_', MAX_DISCONNECT_SECONDS, 5)
 
@@ -262,7 +268,9 @@ class TelescentDriverHandler(DriverHandlerBase):
         out += self.send_command('unallocate --force ' + a)
         out += self.send_command('unallocate --force ' + b)
         if 'Exception' in out or 'ERROR' in out:
-            raise Exception('Error: ' + self._format_error_message(out))
+            raise Exception(
+                'Error: ' + self._format_error_message(out) + " SrcPort: {0}, DstPort: {1}".format(src_port[-1],
+                                                                                                   dst_port[-1]))
 
         self._repeat_until_pattern('switchstate input ' + a, 'STATE = UNALLOCATED_AND_', MAX_DISCONNECT_SECONDS, 5)
         self._repeat_until_pattern('switchstate input ' + b, 'STATE = UNALLOCATED_AND_', MAX_DISCONNECT_SECONDS, 5)
